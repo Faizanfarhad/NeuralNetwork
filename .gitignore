@@ -7,3 +7,6 @@ Classifiers/tempCodeRunnerFile.py
 testing_images/
 iamge_calssification_bias.npz
 image_classificaion_weights.npz
+Notes/
+Classifiers/perceptron.py
+Classifiers/classes_inVecSpace.py
