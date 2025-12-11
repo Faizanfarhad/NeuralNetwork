@@ -81,8 +81,8 @@ class LogisticRegression:
         :param y: labels
         :param need_weights: True if the weights are needed Else False
         '''
-        
-        self.w = np.random.randn(x.shape[0],x.shape[1]) / np.sqrt(x.shape[0]/2)
+        n_input,n_features = x.shape
+        self.w = np.random.randn(n_features) / np.sqrt(n_features)
         self.bias = 0.001
         
         for _ in range(self.num_iter):
