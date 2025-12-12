@@ -126,24 +126,11 @@ class LogisticRegression:
         
         return self.report
     
-    def predict(self,x,w,b):
-        y_pred  = self.fortrained_feed_forward(x,w,b)
+    def predict(self,x):
+        y_pred  = self.feed_forward(x,self.w)
         preds = [1 if i > 0.5 else 0 for i in y_pred]
         return preds
         
-    def fortrained_feed_forward(self,x,w,b):
-        '''
-        Docstring for fortrained_feed_forward
-        
-        :param x: x_test 
-        :param w: Trained Weights
-        :param b: Trained Bias
-        '''
-        z = np.dot(x,w) + b
-        z = self.sigmoid(z)
-        predictions = [1 if pred > 0.5 else 0 for pred in z]
-        return predictions 
-
     def binary_crossentropy(self,y_pred:np.ndarray,y_true:np.ndarray):
         '''
         Docstring for loss
@@ -159,3 +146,4 @@ class LogisticRegression:
 
 if __name__ == '__main__':
     model = LogisticRegression(num_iter=100,lr_rate=0.001)
+    
