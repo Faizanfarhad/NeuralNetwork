@@ -12,7 +12,7 @@ class LogisticRegression:
         self.batch_size = batch_size
         self.num_iter = num_iter
         self.lr_rate = lr_rate 
-        self.weights = None 
+        self.w = None 
         self.bias = None
         
     def sigmoid(self,x):
@@ -46,7 +46,7 @@ class LogisticRegression:
         print(f"y_train shape : {y_train.shape}\nx_train shape: {x_train.shape}\ny_test shape: {y_test.shape}\nx_test shape: {x_test.shape}")
         return x_train,x_test,y_train,y_test
 
-    def mini_batch(self,x,y,w,batch_size):
+    def mini_batch(self,x,y,batch_size):
         x_mini_batches = []
         y_mini_batches = []
         w_mini_batches = []
@@ -57,11 +57,9 @@ class LogisticRegression:
             end = min(start + batch_size,x.shape[0])
             x_mini_batch = x[start:end]
             y_mini_batch = y[start:end]
-            w_mini_batch = w[start:end]
             x_mini_batches.append(x_mini_batch)
             y_mini_batches.append(y_mini_batch)
-            w_mini_batches.append(w_mini_batch)
-        return x_mini_batches,y_mini_batches,w_mini_batches
+        return x_mini_batches,y_mini_batches
 
     
     def feed_forward(self,x,w):
@@ -81,25 +79,25 @@ class LogisticRegression:
         :param y: labels
         :param need_weights: True if the weights are needed Else False
         '''
-        n_input,n_features = x.shape
+        n_inputs,n_features = x.shape
         self.w = np.random.randn(n_features) / np.sqrt(n_features)
         self.bias = 0.001
         
         for _ in range(self.num_iter):
-            x_mini_batch , y_mini_batch,w = self.mini_batch(x,y,self.w,self.batch_size)
+            x_mini_batch , y_mini_batch = self.mini_batch(x,y,self.batch_size)
             for i in range(len(x_mini_batch)):
-                z = self.feed_forward(x_mini_batch[i],w[i])
+                z = self.feed_forward(x_mini_batch[i],self.w)
                 dw = self.compute_dw(x_mini_batch[i],z,y_mini_batch[i])
                 db = self.compute_db(z,y_mini_batch[i])
                 
-                w[i] -= (self.lr_rate * dw.T)
+                self.w -= (self.lr_rate * dw.T)
                 self.bias -= (self.lr_rate * db)
 
                 binary_crossentropy = self.binary_crossentropy(z,y_mini_batch[i])
-                print(f"After {i} Batch BCE : {binary_crossentropy}")
+                if i%10 == 0:
+                    print(f"After {_} Batch BCE : {binary_crossentropy}")
         if need_weights:
-            w_stack = np.concatenate(w,axis=0)
-            return w_stack,self.bias 
+            return self.w,self.bias 
         
 
     def compute_dw(self,x:np.ndarray,y_pred,y_true):
@@ -141,16 +139,10 @@ class LogisticRegression:
         :param w: Trained Weights
         :param b: Trained Bias
         '''
-        prediction = []
-        y = np.zeros(x.shape[0])
-        x_mini_batch , y_mini_batch,w_mini_batch= self.mini_batch(x,y,w,self.batch_size)
-        for i in range(len(x_mini_batch)):
-            z = np.dot(x[i],w_mini_batch[i].T) + b
-            z = self.sigmoid(z)
-            prediction.append(z)
-        prediction = np.concatenate(prediction,axis=0)
-        print(prediction.shape)
-        return prediction
+        z = np.dot(x,w) + b
+        z = self.sigmoid(z)
+        predictions = [1 if pred > 0.5 else 0 for pred in z]
+        return predictions 
 
     def binary_crossentropy(self,y_pred:np.ndarray,y_true:np.ndarray):
         '''
@@ -166,5 +158,4 @@ class LogisticRegression:
         return bce
 
 if __name__ == '__main__':
-    model = LogisticRegression(num_iter=2,lr_rate=0.001)
-    
+    model = LogisticRegression(num_iter=100,lr_rate=0.001)

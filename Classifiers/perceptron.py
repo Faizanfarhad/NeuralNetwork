@@ -72,4 +72,3 @@ class Perceptron:
 
 if __name__ ==  '__main__':
     model = Perceptron(num_iter=100,lr_rate=0.001)
-    
