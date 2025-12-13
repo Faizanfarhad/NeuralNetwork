@@ -10,7 +10,7 @@ image_classificaion_weights.npz
 Notes/
 Classifiers/classes_inVecSpace.py
 reusable/
-Classifiers/perceptron.ipynb
+classifier notebooks/
 All_testing_dataset/
 __pycache__/
 Small_catdog_dataset.npz

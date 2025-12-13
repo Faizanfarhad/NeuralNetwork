@@ -14,6 +14,7 @@ class LogisticRegression:
         self.lr_rate = lr_rate 
         self.w = None 
         self.bias = None
+        self.losses = []
         
     def sigmoid(self,x):
         x = 1 / (1 + np.exp(-x))
@@ -70,7 +71,7 @@ class LogisticRegression:
         return z
     
 
-    def fit(self,x:np.ndarray,y:np.ndarray,need_weights=False):
+    def fit(self,x:np.ndarray,y:np.ndarray):
         '''
         Docstring for fit:
         :This Logistic Regression Mainly Focused on Image Classification
@@ -94,11 +95,9 @@ class LogisticRegression:
                 self.bias -= (self.lr_rate * db)
 
                 binary_crossentropy = self.binary_crossentropy(z,y_mini_batch[i])
+                self.losses.append(binary_crossentropy)
                 if i%10 == 0:
                     print(f"After {_} Batch BCE : {binary_crossentropy}")
-        if need_weights:
-            return self.w,self.bias 
-        
 
     def compute_dw(self,x:np.ndarray,y_pred,y_true):
         n = y_pred.shape[0]
